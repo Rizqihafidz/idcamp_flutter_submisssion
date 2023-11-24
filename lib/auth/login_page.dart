@@ -13,6 +13,28 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   TextEditingController unameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  bool isButtonEnabled = false;
+
+  @override
+  void initState() {
+    super.initState();
+    unameController.addListener(validateFields);
+    passwordController.addListener(validateFields);
+  }
+
+  @override
+  void dispose() {
+    unameController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
+  void validateFields() {
+    setState(() {
+      isButtonEnabled =
+          unameController.text.isNotEmpty && passwordController.text.isNotEmpty;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -88,11 +110,16 @@ class _LoginPageState extends State<LoginPage> {
               padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(backgroundColor: Colors.orange),
-                onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return const HomePage();
-                  }));
-                },
+                onPressed: isButtonEnabled 
+                    ? () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) {
+                            return const HomePage();
+                          }),
+                        );
+                      }
+                    : null,
                 child: const Text('Login'),
               ),
             ),
